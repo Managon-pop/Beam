@@ -19,7 +19,7 @@ use pocketmine\utils\Config;
 use pocketmine\scheduler\PluginTask;
 
 class beam extends PluginBase implements Listener{
-     private $speed = 1.2;
+     private $speed = 0.8;
      private $px, $py, $pz;
      private $bound = false;
      private $explode = false;
@@ -63,7 +63,7 @@ class beam extends PluginBase implements Listener{
      	if($packet instanceof UseItemPacket){
          if($player->getInventory()->getItemInHand()->getId() === 280){
            $x = $player->x;
-           $y = $player->y + 1.5;//目の高さ
+           $y = $player->y + 1.35;
            $z = $player->z;
            $yaw = $player->getYaw();
            $pitch = $player->getPitch();
@@ -76,20 +76,21 @@ class beam extends PluginBase implements Listener{
 }
 
      public function moveHook($yaw, $pitch, Level $level, Player $player){
-      if(-$pitch > 40) $plus = -8;
+      if(-$pitch > 40) $plus = -6;//微調整
+      elseif(-$pitch <= -40) $plus = 10;//微調整
       else $plus = 0;
-      for($c = 0; $c <= 1600; $c++){
+      for($c = 0; $c <= 1400; $c++){
        $y = tan(deg2rad(-$pitch+$plus))*$this->speed;
        $base_t = ($this->speed**2 - $y ** 2) ** 0.5;
        $x = cos(deg2rad($yaw+90))*$base_t;
        $z = sin(deg2rad($yaw+90))*$base_t;
        $pos = new Vector3($x + $this->px, $y + $this->py, $z + $this->pz);
-       $particle = new RedStoneParticle($pos, 8);
+       $particle = new RedStoneParticle($pos, 4);
        $level->addParticle($particle);
        if($level->getBlock($pos)->getId() !== 0){
        if($this->bound) $this->beam_returnPitch($c, $yaw, $pitch, $level, $pos);
        $e = new ex($this, $pos, $level);
-       Server::getInstance()->getScheduler()->scheduleDelayedTask($e, 10);
+       Server::getInstance()->getScheduler()->scheduleDelayedTask($e, 8);
        break;
      }elseif($this->attack){
       foreach($level->getPlayers() as $p){
@@ -137,7 +138,7 @@ class beam extends PluginBase implements Listener{
       $this->px = $pos1->x;
       $this->py = $pos1->y;
       $this->pz = $pos1->z;
-      for($count = 0; $count <= 1600; $count++){
+      for($count = 0; $count <= 1400; $count++){
        $y = tan(deg2rad($pitch))*$this->speed;
        $base_t = ($this->speed**2 - $y ** 2) ** 0.5;
        $x = cos(deg2rad($yaw+90))*$base_t;
@@ -146,7 +147,7 @@ class beam extends PluginBase implements Listener{
        $this->py += $y;
        $this->pz += $z;
        $pos = new Vector3($this->px, $this->py, $this->pz);
-       $particle = new RedStoneParticle($pos, 8);
+       $particle = new RedStoneParticle($pos, 4);
        $level->addParticle($particle);
       }
      $this->px = 0;
