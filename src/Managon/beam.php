@@ -13,7 +13,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\level\particle\RedStoneParticle;
+use pocketmine\level\particle\RedstoneParticle;
 use pocketmine\level\particle\LargeExplodeParticle;
 use pocketmine\utils\Config;
 use pocketmine\scheduler\PluginTask;
@@ -85,7 +85,7 @@ class beam extends PluginBase implements Listener{
        $x = cos(deg2rad($yaw+90))*$base_t;
        $z = sin(deg2rad($yaw+90))*$base_t;
        $pos = new Vector3($x + $this->px, $y + $this->py, $z + $this->pz);
-       $particle = new RedStoneParticle($pos, 4);
+       $particle = new RedstoneParticle($pos, 4);
        $level->addParticle($particle);
        if($level->getBlock($pos)->getId() !== 0){
        if($this->bound) $this->beam_returnPitch($c, $yaw, $pitch, $level, $pos);
@@ -147,7 +147,7 @@ class beam extends PluginBase implements Listener{
        $this->py += $y;
        $this->pz += $z;
        $pos = new Vector3($this->px, $this->py, $this->pz);
-       $particle = new RedStoneParticle($pos, 4);
+       $particle = new RedstoneParticle($pos, 4);
        $level->addParticle($particle);
       }
      $this->px = 0;
