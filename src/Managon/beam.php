@@ -57,7 +57,7 @@ class beam extends PluginBase implements Listener{
         $this->damage = (Int) $this->con->get("damage")*2;
      }
 
-     public function onRecive(DataPacketReceiveEvent $event){
+     public function onReceive(DataPacketReceiveEvent $event){
      	$packet = $event->getPacket();
      	$player = $event->getPlayer();
      	if($packet instanceof UseItemPacket){
@@ -96,9 +96,8 @@ class beam extends PluginBase implements Listener{
       foreach($level->getPlayers() as $p){
         if($p !== $player){
         if($pos->distance($p) < 2){
-          $ev = new EntityDamageEvent($p, 20, $this->damage);
+          $ev = new EntityDamageByEntityEvent($player,$p, 1, $this->damage, 0.4);
           $p->attack($this->damage, $ev);
-          $p->setMotion(new Vector3(mt_rand(-0.01,0.2), mt_rand(0.5, 0.7), mt_rand(-0.01, 0.2)));
           break;
         }
       }
@@ -123,8 +122,13 @@ class beam extends PluginBase implements Listener{
         $level->addParticle($explodeParticle);
         foreach($level->getPlayers() as $p){
           if($pos->distance($p) < rand(4, 5)){
-                $ev = new EntityDamageEvent($p, EntityDamageEvent::CAUSE_CUSTOM, $e = (10 - $pos->distance($p)));
+            if($pos->distance($p) === 1){
+              $ev = new EntityDamageByEntityEvent($player,$p, 1, $this->damage, 0.4);
+              $p->attack($this->damage, $ev);
+            }
+                $ev = new EntityDamageEvent($p, 10, $e = (6 - $pos->distance($p)));
                 $p->attack($e, $ev);
+                $p->setMotion(new Vector3(mt_rand(-0.01,0.2), mt_rand(0.5, 0.7), mt_rand(-0.01, 0.2)));
             }
         }
       }
